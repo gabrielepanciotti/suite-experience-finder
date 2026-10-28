@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: experiencefinder
+      POSTGRES_USER: experiencefinder
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U experiencefinder -d experiencefinder"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/backend.Dockerfile
+      target: prod
+    environment:
+      DATABASE_URL: postgresql+asyncpg://experiencefinder:${DB_PASSWORD:?set DB_PASSWORD in .env}@db:5432/experiencefinder
+      VAULT_DIR: /app/vault
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "10020:10020"
+    volumes:
+      - ../vault:/app/vault:ro
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+      target: prod
+    depends_on:
+      - backend
+    ports:
+      - "3354:3354"
+
+volumes:
+  postgres_data:

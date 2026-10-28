@@ -1,0 +1,25 @@
+{
+  "node": "experiencefinder",
+  "type": "fastapi-react-app",
+  "parent": "travel",
+  "stages": {
+    "scaffold": "ok",
+    "graph": "ok",
+    "ports": "ok",
+    "git": "ok",
+    "conform": "ok",
+    "venv": "ok",
+    "link": "ok",
+    "docs": "ok",
+    "tooling": "ok",
+    "brain": "ok",
+    "go-live": "ok",
+    "dod": "ok"
+  },
+  "manifest": [
+    "tooling: scrivi il blocco `tooling` grants nel node.config e lancia `apply`",
+    "brain: semina lo scheletro-vero (guida-utente + poche note-seme verificate), poi `brain-gate --mode block` deve uscire 0",
+    "go-live: `python -m suite_core.nodes go-live <repo>` (DB+docker+HTTP200)",
+    "dod: itera `python -m suite_core.nodes dod-check <repo>` finché 9/9 (no 🔴/🟡)"
+  ]
+}

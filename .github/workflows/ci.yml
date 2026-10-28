@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend-and-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.LIFE_FRAMEWORK_REPO || 'suite-life' }}
+          path: Life
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install Python dependencies
+        working-directory: repo
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/requirements.txt -r tools/requirements.txt
+          python -m pip install ../Life/packages/shared ../Life/packages/backend-core
+      - name: Run Python tests
+        working-directory: repo
+        run: PYTHONPATH=backend:. pytest backend/tests tools/tests
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.LIFE_FRAMEWORK_REPO || 'suite-life' }}
+          path: Life
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: repo/frontend/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: repo/frontend
+        run: npm ci
+      - name: Run frontend tests
+        working-directory: repo/frontend
+        run: npm test
+      - name: Build frontend
+        working-directory: repo/frontend
+        run: npm run build

@@ -1,0 +1,4 @@
+PyYAML>=6
+pytest>=8
+faster-whisper>=1.2  # audio transcription for Instagram reel ingest (needs ffmpeg on PATH)
+yt-dlp>=2024  # Instagram reel download via saved-collection expansion

@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+asyncpg
+pyyaml
+
+# test-only
+pytest
+pytest-asyncio
+httpx
+aiosqlite
